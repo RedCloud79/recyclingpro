@@ -20,6 +20,7 @@ public class SignUpActivity extends AppCompatActivity {
     private static final String TAG = "SignUpActivity";
     private FirebaseAuth mAuth;
 
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +34,13 @@ public class SignUpActivity extends AppCompatActivity {
         findViewById(R.id.gotoLoginButton).setOnClickListener(onClickListener);
     }
 
+
     @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+    public void onBackPressed(){
+        super.onBackPressed();
+        moveTaskToBack(true);
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(1);
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -49,7 +52,7 @@ public class SignUpActivity extends AppCompatActivity {
                     signUp();
                     break;
                 case R.id.gotoLoginButton:
-                    startLoginActivity();
+                    mystartActivity(LoginActivity.class);
                     break;
             }
         }
@@ -69,6 +72,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     startToast("회원가입에 성공하였습니다.");
+                                    finish();
                                     // success UI
                                 } else {
                                     if (task.getException() != null) {
@@ -93,8 +97,9 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
-    private void startLoginActivity() {
-        Intent intent = new Intent(this,LoginActivity.class);
+    private void mystartActivity(Class c) {
+        Intent intent = new Intent(this, c);
+        intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 }

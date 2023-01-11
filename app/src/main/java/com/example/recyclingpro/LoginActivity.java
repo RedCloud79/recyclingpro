@@ -19,6 +19,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "SignUpActivity";
     private FirebaseAuth mAuth;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,13 +29,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         findViewById(R.id.loginButton).setOnClickListener(onClickListener);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        findViewById(R.id.gotoPassWordResetButton).setOnClickListener(onClickListener);
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -43,13 +38,16 @@ public class LoginActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch(v.getId()){
                 case R.id.loginButton:
-                    signUp();
+                    login();
+                    break;
+                case R.id.gotoPassWordResetButton:
+                    mystartActivity(PasswordResetActivity.class);
                     break;
             }
         }
     };
 
-    private void signUp() {
+    private void login() {
         String email = ((EditText)findViewById(R.id.emailEdittext)).getText().toString();
         String password = ((EditText)findViewById(R.id.passwordEditText)).getText().toString();
 
@@ -61,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 startToast("로그인에 성공하였습니다.");
-                                startMainActivity();
+                                mystartActivity(MainActivity.class);
                             } else {
                                 if (task.getException() != null) {
                                     startToast(task.getException().toString());
@@ -79,8 +77,9 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
 
     }
-    private void startMainActivity() {
-        Intent intent = new Intent(this,MainActivity.class);
+    private void mystartActivity(Class c) {
+        Intent intent = new Intent(this, c);
+        intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 }
